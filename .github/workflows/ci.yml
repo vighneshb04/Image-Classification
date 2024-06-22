@@ -15,23 +15,19 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          fetch-depth: 0  # Ensure entire history is fetched for accurate scans
-          
+          fetch-depth: 0       
       - name: Run Gitleaks
         uses: gitleaks/gitleaks-action@v2
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Required for accessing repository
-
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Set up Python
         uses: actions/setup-python@v2
         with:
-          python-version: 3.11  # Specify Python version needed for your project
-
+          python-version: 3.11
       - name: Install and run Bandit
         run: |
           pip install bandit
           bandit -r .
-
       - name: Check Python dependencies vulnerabilities with pip-audit
       - uses: pypa/gh-action-pip-audit@v1.0.0
         with:
