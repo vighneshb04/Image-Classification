@@ -24,3 +24,13 @@ jobs:
           python-version: 3.11
       - run: pip install bandit
       - run: bandit -r .
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+      - name: Run OWASP Dependency-Check
+        run: |
+          docker run --rm \
+            --volume $(pwd):/src \
+            owasp/dependency-check \
+            --scan /src \
+            --format "ALL" \
+            --out /src/dependency-check-report
