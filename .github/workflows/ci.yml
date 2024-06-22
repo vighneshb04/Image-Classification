@@ -28,3 +28,7 @@ jobs:
         run: pip install safety
       - name: Check vulnerabilities
         run: safety check -r requirements.txt --full-report
+      - name: Install pip-audit
+        run: pip install pip-audit
+      - name: Check vulnerabilities
+        run: pip-audit -r requirements.txt
