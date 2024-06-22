@@ -36,8 +36,8 @@ jobs:
           pip install bandit
           bandit -r .
 
-      # Step 5: Check vulnerabilities in Python dependencies using pip-audit
-      - name: Check Python dependencies vulnerabilities with pip-audit
-      - uses: pypa/gh-action-pip-audit@v1.0.0
-        with:
-          inputs: requirements.txt
+      # Step 5: Install and run pip-audit to check vulnerabilities in Python dependencies
+      - name: Install and run pip-audit
+        run: |
+          pip install pip-audit
+          pip-audit -r requirements.txt
