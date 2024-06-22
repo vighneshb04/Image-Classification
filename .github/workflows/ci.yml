@@ -13,32 +13,26 @@ jobs:
     name: Run security scans
     runs-on: ubuntu-latest
     steps:
-      # Step 1: Checkout the repository
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0  # Ensure entire history is fetched for accurate scans
-
-      # Step 2: Run gitleaks to scan for sensitive data in the repository
+          
       - name: Run Gitleaks
         uses: gitleaks/gitleaks-action@v2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Required for accessing repository
 
-      # Step 3: Setup Python environment
       - name: Set up Python
         uses: actions/setup-python@v2
         with:
           python-version: 3.11  # Specify Python version needed for your project
 
-      # Step 4: Install and run Bandit for Python code security analysis
       - name: Install and run Bandit
         run: |
           pip install bandit
           bandit -r .
 
-      # Step 5: Check vulnerabilities in Python dependencies using pip-audit
       - name: Check Python dependencies vulnerabilities with pip-audit
       - uses: pypa/gh-action-pip-audit@v1.0.0
         with:
           inputs: requirements.txt
-
