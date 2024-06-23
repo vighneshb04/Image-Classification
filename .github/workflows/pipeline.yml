@@ -25,8 +25,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Required for accessing repository
 
-      # Setup Python environment
-      - name: Set up Python
+      # Setup the Python environment
+      - name: Setup Python
         uses: actions/setup-python@v2
         with:
           python-version: 3.11  # Specify Python version needed for your project
@@ -44,7 +44,7 @@ jobs:
           pip-audit -r requirements.txt
 
   build_scan_and_push_image:
-    name: Build, Scan and Push Image
+    name: Build, scan, and push the Docker image
     runs-on: ubuntu-latest
     steps:
       # Checkout the repository
@@ -82,6 +82,7 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
+      # Connect to the VM and perform deployment tasks
       - name: Deploy
         env:
             PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
@@ -90,7 +91,7 @@ jobs:
       
         run: |
           echo "$PRIVATE_KEY" > private_key && chmod 600 private_key
-          ssh -o StrictHostKeyChecking=no -i private_key ${USER_NAME}@${HOST_NAME} '
+          ssh -o StrictHostKeyChecking=no -i private_key ${USER_NAME}@${HOST_NAME} << EOF
               if docker ps | grep -q 'myApp'
               then 
                   echo "Stopping and removing the container."
@@ -99,4 +100,4 @@ jobs:
               fi
               docker rmi nithinpj09/classifier:v1.0
               docker run -d --restart always -p 80:8000 --name myApp nithinpj09/classifier:v1.0
-              '
+          EOF
