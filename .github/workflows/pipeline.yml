@@ -62,5 +62,5 @@ jobs:
           format: 'table'
           exit-code: '1'
           ignore-unfixed: true
-          vuln-type: 'os'
+          vuln-type: 'library'
           severity: 'CRITICAL,HIGH'
