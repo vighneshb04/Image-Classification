@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1
 
-FROM python:3.11-slim-buster
+FROM python:3.11-alpine
 WORKDIR /image_classifier
 COPY . .
 RUN pip3 install -r requirements.txt
