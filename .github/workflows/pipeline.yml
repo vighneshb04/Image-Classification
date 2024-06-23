@@ -49,8 +49,8 @@ jobs:
       # Step 6: Checkout the repository
       - uses: actions/checkout@v4
       
-      - name: Install and run pip-audit
-        uses: docker-practice/actions-setup-docker@v1
+      # - name: Install and run pip-audit
+      #   uses: docker-practice/actions-setup-docker@v1
 
       - name: Build Docker Image
         run: docker build -f Dockerfile-t nithinpj09/classifier:v1.0 .
