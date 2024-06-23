@@ -9,12 +9,13 @@ on:
       - main
 
 jobs:
-  scan:
+  security_scan:
     name: Run security scans
     runs-on: ubuntu-latest
     steps:
       # Checkout the repository
-      - uses: actions/checkout@v4
+      - name: Checkout the repository
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0  # Ensure entire history is fetched for accurate scans
 
@@ -42,16 +43,19 @@ jobs:
           pip install pip-audit
           pip-audit -r requirements.txt
 
-  build:
-    name: Build Image
+  build_scan_and_push_image:
+    name: Build, Scan and Push Image
     runs-on: ubuntu-latest
     steps:
       # Checkout the repository
-      - uses: actions/checkout@v4
-      
+      - name: Checkout the repository
+        uses: actions/checkout@v4
+        
+      # Build the Docker image
       - name: Build Docker Image
         run: docker build -f Dockerfile -t nithinpj09/classifier:v1.0 .
 
+      # Run Trivy vulnerability scanner
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@0.20.0
         with:
