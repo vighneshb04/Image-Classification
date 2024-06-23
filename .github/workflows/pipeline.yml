@@ -76,3 +76,21 @@ jobs:
       # Push the Docker image to Docker Hub
       - name: Push Docker Image
         run: docker push nithinpj09/classifier:v1.0
+
+  Deploy:
+    name: Deploy to VM
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Deploy
+        env:
+            PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
+            HOST_NAME: ${{secrets.HOST_NAME}}
+            USER_NAME: ${{secrets.USER_NAME}}
+      
+        run: |
+          echo "$PRIVATE_KEY" > private_key && chmod 600 private_key
+          ssh -o StrictHostKeyChecking=no -i private_key ${USER_NAME}@${HOST_NAME} '
+              pwd &&
+              ls
+              '
