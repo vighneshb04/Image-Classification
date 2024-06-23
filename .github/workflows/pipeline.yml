@@ -13,6 +13,7 @@ jobs:
     name: Run security scans
     runs-on: ubuntu-latest
     steps:
+    
       # Checkout the repository
       - name: Checkout the repository
         uses: actions/checkout@v4
@@ -46,7 +47,9 @@ jobs:
   build_scan_and_push_image:
     name: Build, scan, and push the Docker image
     runs-on: ubuntu-latest
+    needs: security_scan    
     steps:
+    
       # Checkout the repository
       - name: Checkout the repository
         uses: actions/checkout@v4
@@ -77,11 +80,12 @@ jobs:
       - name: Push Docker Image
         run: docker push nithinpj09/classifier:v1.0
 
-  Deploy:
+  deploy:
     name: Deploy to VM
     runs-on: ubuntu-latest
-    
+    needs: build_scan_and_push_image   
     steps:
+    
       # Connect to the VM and perform deployment tasks
       - name: Deploy
         env:
