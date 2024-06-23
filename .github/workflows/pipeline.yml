@@ -13,30 +13,30 @@ jobs:
     name: Run security scans
     runs-on: ubuntu-latest
     steps:
-      # Step 1: Checkout the repository
+      # Checkout the repository
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0  # Ensure entire history is fetched for accurate scans
 
-      # Step 2: Run gitleaks to scan for sensitive data in the repository
+      # Run gitleaks to scan for sensitive data in the repository
       - name: Run Gitleaks
         uses: gitleaks/gitleaks-action@v2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Required for accessing repository
 
-      # Step 3: Setup Python environment
+      # Setup Python environment
       - name: Set up Python
         uses: actions/setup-python@v2
         with:
           python-version: 3.11  # Specify Python version needed for your project
 
-      # Step 4: Install and run Bandit for Python code security analysis
+      # Install and run Bandit for Python code security analysis
       - name: Install and run Bandit
         run: |
           pip install bandit
           bandit -r .
 
-      # Step 5: Install and run pip-audit to check vulnerabilities in Python dependencies
+      # Install and run pip-audit to check vulnerabilities in Python dependencies
       - name: Install and run pip-audit
         run: |
           pip install pip-audit
@@ -46,7 +46,7 @@ jobs:
     name: Build Image
     runs-on: ubuntu-latest
     steps:
-      # Step 6: Checkout the repository
+      # Checkout the repository
       - uses: actions/checkout@v4
       
       - name: Build Docker Image
@@ -61,3 +61,14 @@ jobs:
           ignore-unfixed: true
           vuln-type: 'os,library'
           severity: 'CRITICAL,HIGH'
+
+      # Log in to Docker Hub
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      # Push the Docker image to Docker Hub
+      - name: Push Docker Image
+        run: docker push nithinpj09/classifier:v1.0
