@@ -90,8 +90,8 @@ jobs:
       - name: Deploy
         env:
             PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
-            HOST_NAME: ${{secrets.HOST_NAME}}
-            USER_NAME: ${{secrets.USER_NAME}}
+            HOST_NAME: ${{ secrets.HOST_NAME }}
+            USER_NAME: ${{ secrets.USER_NAME }}
       
         run: |
           echo "$PRIVATE_KEY" > private_key && chmod 600 private_key
@@ -105,3 +105,19 @@ jobs:
               docker rmi nithinpj09/classifier:v1.0
               docker run -d --restart always -p 80:8000 --name myApp nithinpj09/classifier:v1.0
           EOF
+
+  zap_scan:
+    name: OWASP ZAP Baseline Scan
+    runs-on: ubuntu-latest
+    needs: deploy
+    steps:
+    
+      # Checkout the repository
+      - name: Checkout the repository
+        uses: actions/checkout@v4
+
+      # Run OWASP ZAP Baseline Scan
+      - name: ZAP Scan
+        uses: zaproxy/action-baseline@v0.12.0
+        with:
+          target: 'https://${{ secrets.HOST_NAME }}'
