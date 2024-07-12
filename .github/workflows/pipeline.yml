@@ -119,4 +119,5 @@ jobs:
       # Run OWASP ZAP Baseline Scan
       - name: ZAP Scan
         run: |
-          docker run -t ghcr.io/zaproxy/zaproxy:stable zap-baseline.py -t "http://${{ secrets.HOST_NAME }}"
+          docker run -t ghcr.io/zaproxy/zaproxy:stable zap-baseline.py -t "http://${{ secrets.HOST_NAME }}" -I 
+ 
