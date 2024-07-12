@@ -120,4 +120,4 @@ jobs:
       - name: ZAP Scan
         uses: zaproxy/action-baseline@v0.12.0
         with:
-          target: 'https://${{ secrets.HOST_NAME }}'
+          target: 'http://${{ secrets.HOST_NAME }}'
