@@ -68,7 +68,7 @@ jobs:
           exit-code: '1'
           ignore-unfixed: true
           # vuln-type: 'os,library'
-          vuln-type: 'library'
+          vuln-type: 'os'
           severity: 'CRITICAL,HIGH'
 
       # Log in to Docker Hub
