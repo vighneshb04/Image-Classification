@@ -47,6 +47,7 @@ jobs:
   build_scan_and_push_image:
     name: Build, scan, and push the Docker image
     runs-on: ubuntu-latest
+    if: github.event_name == 'push'
     needs: security_scan    
     steps:
     
@@ -83,6 +84,7 @@ jobs:
   deploy:
     name: Deploy to VM
     runs-on: ubuntu-latest
+    if: github.event_name == 'push'
     needs: build_scan_and_push_image   
     steps:
     
@@ -109,6 +111,7 @@ jobs:
   zap_scan:
     name: OWASP ZAP Baseline Scan
     runs-on: ubuntu-latest
+    if: github.event_name == 'push'
     needs: deploy
     steps:
     
