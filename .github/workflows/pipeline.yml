@@ -129,7 +129,7 @@ jobs:
   zap_scan:
     name: OWASP ZAP Baseline Scan
     runs-on: ubuntu-latest
-    needs: deploy
+    # needs: deploy
     steps:
     
       # Checkout the repository
