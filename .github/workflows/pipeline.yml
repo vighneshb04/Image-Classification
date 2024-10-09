@@ -85,31 +85,31 @@ jobs:
       - name: Push Docker Image
         run: docker push nithinpj09/classifier:v1.0
 
-  deploy:
-    name: Deploy to VM
-    runs-on: ubuntu-latest
-    needs: build_scan_and_push_image   
-    steps:
+  # deploy:
+  #   name: Deploy to VM
+  #   runs-on: ubuntu-latest
+  #   needs: build_scan_and_push_image   
+  #   steps:
     
-      # Connect to the VM and perform deployment tasks
-      - name: Deploy
-        env:
-            PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
-            HOST_NAME: ${{ secrets.HOST_NAME }}
-            USER_NAME: ${{ secrets.USER_NAME }}
+  #     # Connect to the VM and perform deployment tasks
+  #     - name: Deploy
+  #       env:
+  #           PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
+  #           HOST_NAME: ${{ secrets.HOST_NAME }}
+  #           USER_NAME: ${{ secrets.USER_NAME }}
       
-        run: |
-          echo "$PRIVATE_KEY" > private_key && chmod 600 private_key
-          ssh -o StrictHostKeyChecking=no -i private_key ${USER_NAME}@${HOST_NAME} << EOF
-              if docker ps | grep -q 'myApp'
-              then 
-                  echo "Stopping and removing the container."
-                  docker stop myApp
-                  docker rm myApp                      
-              fi
-              docker rmi nithinpj09/classifier:v1.0
-              docker run -d --restart always -p 80:8000 --name myApp nithinpj09/classifier:v1.0
-          EOF
+  #       run: |
+  #         echo "$PRIVATE_KEY" > private_key && chmod 600 private_key
+  #         ssh -o StrictHostKeyChecking=no -i private_key ${USER_NAME}@${HOST_NAME} << EOF
+  #             if docker ps | grep -q 'myApp'
+  #             then 
+  #                 echo "Stopping and removing the container."
+  #                 docker stop myApp
+  #                 docker rm myApp                      
+  #             fi
+  #             docker rmi nithinpj09/classifier:v1.0
+  #             docker run -d --restart always -p 80:8000 --name myApp nithinpj09/classifier:v1.0
+  #         EOF
 
   # zap_scan:
   #   name: OWASP ZAP Baseline Scan
@@ -125,4 +125,18 @@ jobs:
   #     - name: ZAP Scan
   #       run: |
   #         docker run -t ghcr.io/zaproxy/zaproxy:stable zap-baseline.py -t "http://${{ secrets.HOST_NAME }}" -I 
- 
+
+  zap_scan:
+    name: OWASP ZAP Baseline Scan
+    runs-on: ubuntu-latest
+    needs: deploy
+    steps:
+    
+      # Checkout the repository
+      - name: Checkout the repository
+        uses: actions/checkout@v4
+
+      # Run OWASP ZAP Baseline Scan
+      - name: ZAP Scan
+        run: |
+          docker run -t ghcr.io/zaproxy/zaproxy:stable zap-baseline.py -t "http://192.168.20.128:5000/" -I 
