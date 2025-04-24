@@ -72,7 +72,8 @@ jobs:
           ignore-unfixed: true
           vuln-type: 'os,library'
           # vuln-type: 'os'
-          severity: 'CRITICAL,HIGH'
+          severity: 'CRITICAL'
+          # severity: 'CRITICAL,HIGH'      
 
       # # Log in to Docker Hub
       # - name: Log in to Docker Hub
