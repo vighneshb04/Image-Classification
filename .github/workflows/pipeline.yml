@@ -10,40 +10,40 @@ on:
   workflow_dispatch:
 
 jobs:
-  # security_scan:
-  #   name: Run security scans
-  #   runs-on: ubuntu-latest
-  #   steps:
+  security_scan:
+    name: Run security scans
+    runs-on: ubuntu-latest
+    steps:
     
-  #     # Checkout the repository
-  #     - name: Checkout the repository
-  #       uses: actions/checkout@v4
-  #       with:
-  #         fetch-depth: 0  # Ensure entire history is fetched for accurate scans
+      # Checkout the repository
+      - name: Checkout the repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Ensure entire history is fetched for accurate scans
 
-  #     # Run gitleaks to scan for sensitive data in the repository
-  #     - name: Run Gitleaks
-  #       uses: gitleaks/gitleaks-action@v2
-  #       env:
-  #         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Required for accessing repository
+      # Run gitleaks to scan for sensitive data in the repository
+      - name: Run Gitleaks
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Required for accessing repository
 
-  #     # Setup the Python environment
-  #     - name: Setup Python
-  #       uses: actions/setup-python@v5
-  #       with:
-  #         python-version: 3.11  # Specify Python version needed for your project
+      # Setup the Python environment
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'  # Specify Python version needed for your project
 
-  #     # Install and run Bandit for Python code security analysis
-  #     - name: Install and run Bandit
-  #       run: |
-  #         pip install bandit
-  #         bandit -r .
+      # Install and run Bandit for Python code security analysis
+      - name: Install and run Bandit
+        run: |
+          pip install bandit
+          bandit -r .
 
-  #     # Install and run pip-audit to check vulnerabilities in Python dependencies
-  #     - name: Install and run pip-audit
-  #       run: |
-  #         pip install pip-audit
-  #         pip-audit -r requirements.txt
+      # Install and run pip-audit to check vulnerabilities in Python dependencies
+      - name: Install and run pip-audit
+        run: |
+          pip install pip-audit
+          pip-audit -r requirements.txt
 
   build_scan_and_push_image:
     name: Build, scan, and push the Docker image
@@ -51,7 +51,7 @@ jobs:
     if: |
       github.event_name == 'push' || github.event_name == 'workflow_dispatch' ||
       (github.event_name == 'pull_request' && github.event.action == 'closed' && github.event.pull_request.merged == true)
-    # needs: security_scan    
+    needs: security_scan    
     steps:
     
       # Checkout the repository
@@ -62,28 +62,28 @@ jobs:
       - name: Build Docker Image
         run: docker build -f Dockerfile -t nithinpj09/classifier:v1.0 .
 
-      # # Run Trivy vulnerability scanner
-      # - name: Run Trivy vulnerability scanner
-      #   uses: aquasecurity/trivy-action@0.20.0
-      #   with:
-      #     image-ref: 'nithinpj09/classifier:v1.0'
-      #     format: 'table'
-      #     exit-code: '1'
-      #     ignore-unfixed: true
-      #     # vuln-type: 'os,library'
-      #     vuln-type: 'os'
-      #     severity: 'CRITICAL,HIGH'
-
-      # Log in to Docker Hub
-      - name: Log in to Docker Hub
-        uses: docker/login-action@v3
+      # Run Trivy vulnerability scanner
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@0.20.0
         with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
+          image-ref: 'nithinpj09/classifier:v1.0'
+          format: 'table'
+          exit-code: '1'
+          ignore-unfixed: true
+          vuln-type: 'os,library'
+          # vuln-type: 'os'
+          severity: 'CRITICAL,HIGH'
 
-      # Push the Docker image to Docker Hub
-      - name: Push Docker Image
-        run: docker push nithinpj09/classifier:v1.0
+      # # Log in to Docker Hub
+      # - name: Log in to Docker Hub
+      #   uses: docker/login-action@v3
+      #   with:
+      #     username: ${{ secrets.DOCKERHUB_USERNAME }}
+      #     password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      # # Push the Docker image to Docker Hub
+      # - name: Push Docker Image
+      #   run: docker push nithinpj09/classifier:v1.0
 
   # deploy:
   #   name: Deploy to VM
