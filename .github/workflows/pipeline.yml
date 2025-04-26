@@ -9,6 +9,9 @@ on:
       - main
   workflow_dispatch:
 
+env:
+  HOST_NAME: ${{ secrets.HOST_NAME }} 
+
 jobs:
   security_scan:
     name: Run security scans
@@ -95,10 +98,8 @@ jobs:
       # Connect to the VM and perform deployment tasks
       - name: Deploy
         env:
-            PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
-            HOST_NAME: ${{ secrets.HOST_NAME }}
-            USER_NAME: ${{ secrets.USER_NAME }}
-      
+          USER_NAME: ${{ secrets.USER_NAME }}    
+          PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
         run: |
           echo "$PRIVATE_KEY" > private_key && chmod 600 private_key
           ssh -o StrictHostKeyChecking=no -i private_key ${USER_NAME}@${HOST_NAME} << EOF
@@ -123,6 +124,6 @@ jobs:
         uses: actions/checkout@v4
 
       # Run OWASP ZAP Baseline Scan
-      - name: ZAP Scan
+      - name: ZAP Scan    
         run: |
-          docker run -t ghcr.io/zaproxy/zaproxy:stable zap-baseline.py -t "http://${{ secrets.HOST_NAME }}" -I 
+          docker run -t ghcr.io/zaproxy/zaproxy:stable zap-baseline.py -t "http://${HOST_NAME}" -I 
