@@ -60,13 +60,13 @@ jobs:
         
       # Build the Docker image
       - name: Build Docker Image
-        run: docker build -f Dockerfile -t nithinpj09/classifier:v1.0 .
+        run: docker build -f Dockerfile -t ${{ vars.IMAGE_NAME }} .
 
       # Run Trivy vulnerability scanner
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@0.20.0
         with:
-          image-ref: 'nithinpj09/classifier:v1.0'
+          image-ref: '${{ vars.IMAGE_NAME }}'
           format: 'table'
           exit-code: '1'
           ignore-unfixed: true
@@ -84,7 +84,7 @@ jobs:
 
       # Push the Docker image to Docker Hub
       - name: Push Docker Image
-        run: docker push nithinpj09/classifier:v1.0
+        run: docker push ${{ vars.IMAGE_NAME }}
 
   deploy:
     name: Deploy to VM
@@ -108,8 +108,8 @@ jobs:
                   docker stop myApp
                   docker rm myApp                      
               fi
-              docker rmi nithinpj09/classifier:v1.0
-              docker run -d --restart always -p 80:8000 --name myApp nithinpj09/classifier:v1.0
+              docker rmi ${{ vars.IMAGE_NAME }}
+              docker run -d --restart always -p 80:8000 --name myApp ${{ vars.IMAGE_NAME }}
           EOF
 
   zap_scan:
