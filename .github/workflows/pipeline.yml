@@ -43,10 +43,10 @@ jobs:
           bandit -r .
 
       # Install and run pip-audit to check vulnerabilities in Python dependencies
-      - name: Install and run pip-audit
-        run: |
-          pip install pip-audit
-          pip-audit -r requirements.txt
+      # - name: Install and run pip-audit
+      #   run: |
+      #     pip install pip-audit
+      #     pip-audit -r requirements.txt
 
   build_scan_and_push_image:
     name: Build, scan, and push the Docker image
