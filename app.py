@@ -1,4 +1,4 @@
-from flask import Flask, redirect, url_for, request, render_template, jsonify, Response
+from flask import Flask, request, render_template, jsonify
 import re
 from PIL import Image
 from io import BytesIO
@@ -12,7 +12,7 @@ app = Flask(__name__)
 def index():
     return render_template('index.html')
 
-@app.route('/predict', methods=['GET', 'POST'])
+@app.route('/predict', methods=['POST'])
 def predict():
     if request.method == 'POST':
         image_data = re.sub('^data:image/.+;base64,', '', request.json)
